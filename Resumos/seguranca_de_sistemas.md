@@ -6,7 +6,7 @@
 
 - **Economia nos Mecanismos**: um sistemas deve ter apenas as funcionalidades necessárias - Keep It Simple - facilita a implementação, a usabilidade e a validação
 - **Proteção por omissão**: por omissão, a configuração de um sistema deve ter o nível de proteção conservador (máximo de segurança)
-- **Desenho aberto**: assumir que o adversário sabe tudo sobre o nosso sistema. O segredo são parâmetros do sistema - chaves cripttográficas, passwords. A vantagem é saber mais rapidamente da existência de vulnerabilidades e podemos mudar os parametros sem mudar o sistema
+- **Desenho aberto**: assumir que o adversário sabe tudo sobre o nosso sistema. O segredo são parâmetros do sistema - chaves criptográficas, passwords. A vantagem é saber mais rapidamente da existência de vulnerabilidades e podemos mudar os parâmetros sem mudar o sistema
 - **Defesa em Profundidade**: Nunca devemos confiar numa única linha de defesa
 - **Privilégio mínimo**: conceder a cada utilizador/compartimento/programa apenas os privilégios necessários para realizarem a sua função
 - **Separação de Privilégios**: O sistema deve ser compartimentado. Cada compartimento está isolado dos outros e as interações devem ser monitorizadas, já que são contextos diferentes, por exemplo em termos de permissões (não confiar no que vem de fora e não enviar nada que não tenha de ser enviado).
@@ -31,13 +31,13 @@ Representação clara e eficiente mas muito grande.
 Junto a cada recurso, guardar o que cada ator pode fazer sobre esse mesmo recurso, não sendo necessário guardar atores que não tem permissões sobre o recurso.<br>
 Garante que o recurso é apenas acedido por um número limitado de atores mas torna difícil realizar queries orientadas aos atores.
 
-## Listas de perissões
+## Listas de permissões
 Junto a cada ator, guardar que recursos ele pode usar e com que permissões.<br>
 Permite rapidamente sabes todos os recursos a que um ator tem acesso mas torna difícil realizar queries orientadas aos recursos.
 
 ## Role Based Access Control
 
-Criar perfis (roles) - conceito intermédio - e atribuir a cada ator um perfil. Em cada recurso, definir as permissões dos utilizadores-tipo. Separa a gestão de recursos e a gestão de utilizadores.
+Criar perfis (roles) - conceito intermédio - e atribuir a cada ator um perfil. Em cada recurso, definir as permissões dos utilizadores-tipo. Separar a gestão de recursos e a gestão de utilizadores.
 
 ## Attribute-based Access Control
 
@@ -58,14 +58,15 @@ Pretendem garantir: isolamento virtual entre utilizadores, aplicações e proces
 
 ## Kernel
 
-Parte (software) do sistema operativo que desempenha as operações mais críticas. Não possui restrições do que pode fazer sobre o hardware. Dois modos de funcionamento: kernel mode e user mode. O código em user mode não tem acesso direto aos recurso do sistema, é o kernel que permite esse acesso.<br>
+Parte (software) do sistema operativo que desempenha as operações mais críticas. Não possui restrições do que pode fazer sobre o hardware. <br>
+Dois modos de funcionamento: **kernel mode** e **user mode**. O código em user mode não tem acesso direto aos recurso do sistema, é o kernel que permite esse acesso.<br>
 Tem um espaço de memória próprio, que gere. O processador garante que nenhum código a correr um user mode tem acesso ao hardware.
 
 ## Confinamento
 
 Os pontos de entrada são system calls.
 
-**Reference monitor**: Sistema de monitorização que vê se as regras que estão a ser colocadas em prática quando à gestão da fronteira estão a ser cumpridas. Ex: lançamento de execeções do processador é reference monitor
+**Reference monitor**: Sistema de monitorização que vê se as regras que estão a ser colocadas em prática quanto à gestão da fronteira estão a ser cumpridas. Ex: lançamento de execeções do processador é reference monitor
 
 ## System calls
 
@@ -109,7 +110,7 @@ Um sistema é **confiável** se faz exatamente e apenas aquilo que foi especific
 
 ## Medidas de Mitigação
 
-Erros de administração e falhas que ultrapassam o principio de funcionamento do sistema porque exploram erros na sua implementação.<br>
+Erros de administração e falhas que ultrapassam o princípio de funcionamento do sistema porque exploram erros na sua implementação.<br>
 Monitorização é uma forma de mitigação. Procurar garantir o isolamento entre processos.
 
 ## Memória
@@ -148,7 +149,7 @@ Cada processo tem associado um effective user id, que identifica em nome de quem
 
 ### Login
 
-O sistema executa um processo de login como root. Quando o utilizador se autentica, esse processo altera o seu próprio UID e GID para corresponder às permissões do user. - **Drop privileges**<br>.
+O sistema executa um processo de login como root. Quando o utilizador se autentica, esse processo altera o seu próprio UID e GID para corresponder às permissões do user. - **Drop privileges**.<br>
 
 O reverso - **Elevate privileges** - procura obter mais permissões do que as que tem. Deveria ser impossível mas pode ser usado de forma controlada (ex: trocar o atributo de ficheiro e fazer com que, quando o user o executar, está a fazê-lo com as permissões do owner desse ficheiro).
 
@@ -185,7 +186,7 @@ Em cima do hardware, pomos a correr um hypervisor (componentes comuns a um siste
 
 ## SFI + SCI
 
--**Software Fault Isolation**: técnicas que garantem isolamento no acesso a memória para processos que estão a conviver no mesmo espaço de endereçamento.
+-**Software Fault Isolation**: técnicas que garantem isolamento no acesso a memória para processos que estão a conviver no mesmo espaço de endereçamento.<br>
 -**System Call Interposition**: mecanismo geral que o kernel adota para gerir o acesso aos recursos. Pontos de acesso são bem definidos e monitorizados.
 
 ## Sandboxing
@@ -200,7 +201,7 @@ Componente de monitorização (**reference monitor**) que faz a mediação em fr
 
 Em linux, *chroot()* (change root) permite criar jails. Separar software para ele não causar problemas. Apenas utilizado pelo root, transforma a pasta atual na raiz do filesystem.<br>
 System calls que acedem a ficheiros são intercetadas e os paths recebem um prefixo equivalente à pasta atual, fazendo com que as aplicações não acedama a nada fora da sua pasta atual.<br>
-posteriormente, apareceu um utilitário **jailkit** que permite configurar estes mecanismos de modo a dar recursos aos processos que estão a correr naquele ambiente. Verifica se a configuração é segura e lança uma shell confinada a essa área mas com acesso a recursos que se encontram fora.<br>
+Posteriormente, apareceu um utilitário **jailkit** que permite configurar estes mecanismos de modo a dar recursos aos processos que estão a correr naquele ambiente. Verifica se a configuração é segura e lança uma shell confinada a essa área mas com acesso a recursos que se encontram fora.<br>
 **Freebsd jail** fornece uma quasi-virtualização. Permite restringir o que se pode fazer como root quando se está dentro da jail para precaver escaladas de privilégios.
 
 ## Evolução
@@ -244,7 +245,7 @@ O resultado de uma system call é filtrado pelo sistema e a política dita o res
 # Software Fault Isolation
 
 O objetivo é limitar a zona de memória que está acessível a uma aplicação (ex: sandboxing no chrome).<br>
-Ãtribui-se um segmento de memória ao programa com uma gama de endereços que conseguimos verificar, usando operações bitwise, se a gama está correta.<br>
+Atribui-se um segmento de memória ao programa com uma gama de endereços que conseguimos verificar, usando operações bitwise, se a gama está correta.<br>
 Operações perigosas:
 - load e store de memória - antes de aceder à memória adicionar uma guarda para verificar se o endereço é válido ou forçar a que seja válido.
 - saltos - em código malicioso, pode existir tentativa de bypass de guardas através de um salto
@@ -256,7 +257,7 @@ Mecanismo de utilizado para isolamento nos seguintes cenários:
 - hypervisor seja vulnerável
 - improvável os dois anteriores ao mesmo tempo
 
-Aplicções práticas:
+Aplicações práticas:
 - NSA NetTop: ter no mesmo computador 2 sistemas operativos Guest para além do SO host, um para guardar informação classified e outro para informação non classified
 - providers cloud: não tem um SO host, hypervisor gere diretamente o hardware. Na mesma 2 so guest com a informação descrita acima
 - Qubes: sistema operativo orientado à virtualização. Oferece ao utilizador a escolha de quantas VM para gerir.
