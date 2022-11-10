@@ -6,11 +6,11 @@
 
 Guarda:
 - informação de controlo - endereços do código que temos de executar (inclui pontos de retorno) 
-- dados da aplicação (ex: variaveis locais, argumentos das funções) 
+- dados da aplicação (ex: variáveis locais, argumentos das funções) 
 
 ## Usurpação de controlo
 
-Substituir a sequência de intruções alterada por uma controlada pelo atacante. Pode ocorrer na stack, na heap e noutros sítios, tipicamente devido a falhas de como se gere a memória.
+Substituir a sequência de instruções alterada por uma controlada pelo atacante. Pode ocorrer na stack, na heap e noutros sítios, tipicamente devido a falhas de como se gere a memória.
 
 ## Funcionamento da stack
 
@@ -38,8 +38,8 @@ Uma stack frame tem a seguinte estrutura com sempre **dois extremos**:
 - **frame pointer**: endereço do frame pointer da função anterior - no frame pointer da frame da função f1 temos o endereço do frame pointer da main
 - **registos**: guardados que são usados na função da stack frame
 - **variáveis locais**
-- **parametros de função**: caso se chame outra função dentro da que nos encontramos, são aqui uardados os parametros passados para essa função - na frame da f1 poderiam ser guardados os parametros passados a f2.
-- **return address**: localda instrução seuinte à chamada de uma função - f1 ao chamar f2 necessita de voltar ao mesmo ponto onde se encontrava e não começar a execução do início
+- **parâmetros de função**: caso se chame outra função dentro da que nos encontramos, são aqui guardados os parâmetros passados para essa função - na frame da f1 poderiam ser guardados os parâmetros passados a f2.
+- **return address**: local da instrução seguinte à chamada de uma função - f1 ao chamar f2 necessita de voltar ao mesmo ponto onde se encontrava e não começar a execução do início
 
 O **stack pointer** gere a parte dinâmica da função - mexe-se.
 
@@ -47,7 +47,7 @@ O **stack pointer** gere a parte dinâmica da função - mexe-se.
 
 **Segmentation fault** - ocorre quando um processo está a escrever fora da sua zona de memória. Não é o que acontece.
 <br> 
-O que acontece é que estão a ser escritas coisas aonde não é suposto seremescritas e o sistema operativo assume que não fazemos isso - undifined behavior.
+O que acontece é que estão a ser escritas coisas onde não é suposto serem escritas e o sistema operativo assume que não fazemos isso - undifined behaviour.
 <br>
 O atacante pode preencher a stack com código, substituir o endereço de retorno para um local onde exista código arbitrário escolhido pelo mesmo e executá-lo.
 Trabalhar com offsets e não endereços fixos.
@@ -68,7 +68,7 @@ Domínio de programação e debugging a baixo nível, compreender as causas do a
 
 ### Heap spraying
 
-Inserir código malicioso em várias partes da heap. Maior parte das vezes com um bufferpreenchido por NOPs seguido de shellcode, isto permite uma margem de erro ao atacante.
+Inserir código malicioso em várias partes da heap. Maior parte das vezes com um buffer preenchido por NOPs seguido de shellcode, isto permite uma margem de erro ao atacante.
 
 ### Use after free
 
@@ -85,19 +85,19 @@ Pode levar a que o programa leia memória controlada pelo atacante.
 ### Repetição de código
 
 Consiste em não injetar código próprio mas utilizar código que já existe na máquina.<br>
-Utilizar bibliotecas, são comuns, usadas por várias aplicações e por vezes tem mais permissões que as próprias aplicações. Para além disso, os endereços são fáceis de prever devido à forma como o sistema operativo fazem a gestão deste código.<br>
+Utilizar bibliotecas já que são comuns, usadas por várias aplicações e por vezes tem mais permissões que as próprias aplicações. Para além disso, os endereços são fáceis de prever devido à forma como o sistema operativo fazem a gestão deste código.<br>
 Ex: a linc é utilizada por quase todos os programas e contém duas funções importantes para auxiliar ataques: **system** - permite correr um comando na shell - e **mprotect** - permite alterar permissões do espaço de memória.
 
 #### Return Oriented programming
 
-DEpendendo do código a que temos acesso, identificar pedaços de código úteis e executá-los consequentemente (através dos endereços de retorno).<br>
+Dependendo do código a que temos acesso, identificar pedaços de código úteis e executá-los consequentemente (através dos endereços de retorno).<br>
 Em teoria, permite-nos implementar qualquer código que queiramos.
 
 ### Strings de formatação
 
 Num printf que tenha uma string de formatação, vai-se buscar o valor mais próximo que estiver na stack. O printf sobe na stack.<br>
 Uma das causas pode ser código de debug esquecido.<br>
-Outra é quando é dado print de inputs do user sem qualquer restrições. Caso o utilizador tiver intenções maliciosas, pode dar print a conteúdos que se encontram na stack incluindo ler de qualquer um endereço na memória.<br>
+Outra é quando é dado print de inputs do user sem qualquer restrições. Caso o utilizador tenha intenções maliciosas, pode dar print a conteúdos que se encontram na stack incluindo ler de qualquer um endereço na memória.<br>
 Para além de leitura, strings de formatação permitem alterar valores em memória (ex: com %n).
 
 ## Prevenção
