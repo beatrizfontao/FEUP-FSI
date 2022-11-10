@@ -165,3 +165,125 @@ Utilizadores comuns apenas podem alterar o EUID para RUID e SUID.<br><br>
 
 A system call *seteuid()* apenas altera o EUID. Serve para, por exemplo, quando temos o objetivo de criar um processo com as permissões de um utilizador comum conseguirmos perder privilégio momentaneamente e recuperá-los restaurando o EUID para o RUID ou para o SUID que foram preservados.<br>
 
+---
+
+# Confinamento
+
+## Executar código malicioso
+O objetivo é executar código no qual não confiamos. Isto pode ser necessário, por exemplo, quando o código vem de fontes externas nas quais não confiamos.<br>
+Código legacy é código, que mesmo confiando na fonte, possui bugs.<br>
+Confinar código que já sabemos que é malware mas que queremos ver o que é que ele faz.<br>
+Um honeypot é código vulnerável criado de propósito e colocado em código bem implementado de forma a ser apelativo a atacantes, tornando fácil identificar tentativas de usurpação desse recurso.
+
+## Air Gap
+
+Não existir ligação física de umamáquina que queremos proteger a outras máquinas. 
+
+## Máquinas Virtuais
+
+Em cima do hardware, pomos a correr um hypervisor (componentes comuns a um sistema operativo mas muito mais simples e mais fácil de analisar). O objetivo é emular máquinas independentes para poder correr, ao mesmo tempo, vários sistemas operativos com garantia de isolamento entre os mesmos.
+
+## SFI + SCI
+
+-**Software Fault Isolation**: técnicas que garantem isolamento no acesso a memória para processos que estão a conviver no mesmo espaço de endereçamento.
+-**System Call Interposition**: mecanismo geral que o kernel adota para gerir o acesso aos recursos. Pontos de acesso são bem definidos e monitorizados.
+
+## Sandboxing
+
+Confinamento dentro das próprias aplicações.
+
+## Implementação
+
+Componente de monitorização (**reference monitor**) que faz a mediação em fronteiras de confiança de modo a garantir que nenhum acesso é feito sem ser analisado. Quando falha, todo o sistema tem de parar.
+
+## Jails
+
+Em linux, *chroot()* (change root) permite criar jails. Separar software para ele não causar problemas. Apenas utilizado pelo root, transforma a pasta atual na raiz do filesystem.<br>
+System calls que acedem a ficheiros são intercetadas e os paths recebem um prefixo equivalente à pasta atual, fazendo com que as aplicações não acedama a nada fora da sua pasta atual.<br>
+posteriormente, apareceu um utilitário **jailkit** que permite configurar estes mecanismos de modo a dar recursos aos processos que estão a correr naquele ambiente. Verifica se a configuração é segura e lança uma shell confinada a essa área mas com acesso a recursos que se encontram fora.<br>
+**Freebsd jail** fornece uma quasi-virtualização. Permite restringir o que se pode fazer como root quando se está dentro da jail para precaver escaladas de privilégios.
+
+## Evolução
+
+- namespace: através da associação a um espaço de identificação de recurso, cada processo tem um namespace  e dentro de cada namespace são disponibilizados alguns recursos.
+- cgroups: controla a quantidade de recursos utilizados por um processo.
+
+--- 
+
+# System Call Interposition
+
+A superfície de ataque em user mode está limitada a system calls. É então importante monitorizar as system calls que um processo pode fazer e bloquear as que não são autorizadas.<br>
+Como?
+- dentro do kernel: mecanismo em kernel space (*seccomp* em linux)
+- fora do kernel: mecanismo em user space
+- esquema híbrido (Systrace)
+
+## Ptrace
+
+System call que existe no linux. Quando um processo cria descendentes e o processo filho faz uma system call, o primeiro processo é notificado. Se essa chamada não tiver sido autorizada, o processo que está a monitorizar pode terminar o processo descendente.<br>
+Limitações:
+- ineficiente porque obriga a intercetar todas as chamadas
+- ao abortar uma system call implica abortar o processo todo
+- Situações de race-conditions e TOCTOU
+
+## seccomp ++ bpf
+
+seccomp = Secure computing mode:
+- processo chama *prctl()* (process control) e entra em modo seguro
+- A partir daí tudo o que pode fazer está restrito (drop privileges). 
+- A qualquer violação, o kernel termina o processo.
+  
+seccomp ++ bpf:
+- Evolução do anterior
+- Existe uma linguagem expressiva - Berkeley Packet Filter - que permite configurar a política de acesso às diferentes system calls de uma maneira mais firme.
+- Um processo pode instalar múltiplos filtros BPF (depois de instalado não pode ser desativado) que vão ser propagados para todos os seus descendentes.
+
+Parâmetros abrangentes: system call, argumentos, arquiteturas. <br>
+O resultado de uma system call é filtrado pelo sistema e a política dita o resultado dessa chamada(kill, rejeitar e retornar erro ou permitir)
+
+# Software Fault Isolation
+
+O objetivo é limitar a zona de memória que está acessível a uma aplicação (ex: sandboxing no chrome).<br>
+Ãtribui-se um segmento de memória ao programa com uma gama de endereços que conseguimos verificar, usando operações bitwise, se a gama está correta.<br>
+Operações perigosas:
+- load e store de memória - antes de aceder à memória adicionar uma guarda para verificar se o endereço é válido ou forçar a que seja válido.
+- saltos - em código malicioso, pode existir tentativa de bypass de guardas através de um salto
+
+# Máquinas Virtuais
+
+Mecanismo de utilizado para isolamento nos seguintes cenários:
+- OS seja vulnerável ou comprometido
+- hypervisor seja vulnerável
+- improvável os dois anteriores ao mesmo tempo
+
+Aplicções práticas:
+- NSA NetTop: ter no mesmo computador 2 sistemas operativos Guest para além do SO host, um para guardar informação classified e outro para informação non classified
+- providers cloud: não tem um SO host, hypervisor gere diretamente o hardware. Na mesma 2 so guest com a informação descrita acima
+- Qubes: sistema operativo orientado à virtualização. Oferece ao utilizador a escolha de quantas VM para gerir.
+
+# Quebras de isolamento
+
+**Canais subliminares**: observar o comportamento do hardware/software que tem à disposição, a partir daí inferir o comportamento dos outros processos
+
+## Red pill or Blue pill
+
+Será possível um programa que está a correr dentro de um ambiente de virutalização saber que está a correr dentro de um ambiente de virtualização?
+<br><br>
+Esta questão é importante, por exemplo no caso de malware, queremos impedir que saiba que está a ser executado num ambiente de virtualização.
+<br>
+Como detetar: 
+- profiling: tentar detetar a que informações/features de hardware tenho acesso e mapear em aspetos que sabemos que são de ambientes de virtualização
+- medir o tempo que uma operação e tentar deduzir se existe um overhead de virtualização.
+
+---
+
+# Malware
+
+A nossa máquina faz coisas do interesse do atacante ao explorar uma vulnerabilidade ou ao executar código malicioso.
+
+Terminologia:
+
+- **Virus**: malware que não se consegue propagar sozinho, propaga-se quando ocorrem ações do utilizador
+- **Worm**: malware que se propaga automaticamente, pode ter um crescimento exponencial
+- **Rootkit**: código criado para infetar máquinas e permitir acessos com privilégios elevados ao atacante
+- **Trojan**: código que tenta aparentar ser legítimo mas tem como objetivo auxiliar um ataque (ex: transmitir informação)
