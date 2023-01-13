@@ -231,9 +231,9 @@ Funcionamento:
 
 Distingue tráfego recebido do que é enviado. Permite todos os acessos de dentro para fora mas não vice-versa. De fora para dentro é muito conservador: permite acesso a serviços explicitamente designados para exposição e nega todos os outros acessos a serviços internos.
 
-Para o que não está expelícito nas políticas:
+Para o que não está explícito nas políticas:
 - **Default allow**: permitir todos os acessos exceto problemas específicos
-- **Defualt deny**: permiir apenas alguns acessos comuns a todos os sistemas - proteção por omissão
+- **Defualt deny**: permitir apenas alguns acessos comuns a todos os sistemas - proteção por omissão
 
 ## Filtragem de Pacotes
 
@@ -267,7 +267,7 @@ Quando chega um pacote a essa porta, o router sabe para onde reencaminhá-lo e v
 
 Vantagens:
 - Reduz a exposição ao exterior
-- Ligações externas são descartadas, a nãoser que tenham sido iniciadas internamente
+- Ligações externas são descartadas, a não ser que tenham sido iniciadas internamente
 
 Desvantagens:
 - Pode perturbar o funcionamento de alguns protocolos
