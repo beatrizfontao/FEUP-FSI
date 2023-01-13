@@ -14,7 +14,7 @@ Regras:
 - semantica: intrepertar o conteudo das mensagens
 - normas/especificações: todas partilham as mesmas regras
 
-## Despositivos
+## Dispositivos
 
 Cada camada tem dispositivos:
 - Camada Física: hubs, cabos, antenas
