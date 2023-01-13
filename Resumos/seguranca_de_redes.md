@@ -56,7 +56,7 @@ Internet organizada em Autonomous Systems. Estrutura quasi-hierárquica com um p
 
 Camada de transporte, ligações de longa duração, gestão de tráfego e congestão. Cada aplicação tem um identificador que é o número de uma porta.
 
-### Handshake e Comunicaqöes TCP
+### Handshake e Comunicações TCP
 
 É preciso ter a certeza que estamos a comunicar com alguém com o qual acordamos alguma metainformação que depois vai ser usada para o controlo das comunicações. Essa informação resume-se a sincronizar dois números de sequência. Estes números controlam a quantidade de informação transmitica de recebida.
 
