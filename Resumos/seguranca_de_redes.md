@@ -94,7 +94,7 @@ Wiretapping é o processo de escutar um canal de comunicações onde entidades t
 
 ## Eavesdropping/Packet sniffing
 
-É uma forma de wiretapping em redes de comunicação, ondg se recolhgm e armazenam os pacotes trocados entre utilizadores legitimos de uma sub-rede. Permite a um atacante observar todas as comunicações não cifradas(extrair passwords e outra informação sensível).
+É uma forma de wiretapping em redes de comunicação, onde se recolhem e armazenam os pacotes trocados entre utilizadores legitimos de uma sub-rede. Permite a um atacante observar todas as comunicações não cifradas(extrair passwords e outra informação sensível).
 
 ## MAC flooding: melhor sniffing
 
