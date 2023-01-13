@@ -6,9 +6,9 @@
 
 ## Modelo de Segurança
 
-Assumir um atacante na rede que controla tudo na insfra-estrutura(routers, DNS,...) incluindo escutar, bloquear e alterar pacotes e mensagens.
+Assumir que existe um atacante na rede que controla tudo na insfra-estrutura(routers, DNS,...) incluindo escutar, bloquear e alterar pacotes e mensagens.
 
-As sessões de TLS começas por usar criptografia de chave pública e de seguida chave simétrica.
+As sessões de TLS começam por usar criptografia de chave pública e de seguida chave simétrica.
 
 Handshake TLS1.3 = Diffie-Hellman Autenticado.
 
@@ -23,7 +23,7 @@ Problemas/soluções:
   - informar o proxy qual o site para qual essas mensagens devem ser enviadas
 - virtual hosts: mesmo IP com vários DNS => como é que o servidor sabe qual certificado devolver?
   - solução antiga: client-hello inclui nome de domínio do servidor - poe em causa o anonimato que estava a tentar ser garantido ao esconder os certificados
-  - ainda não solução mas oideal seria existir uma forma de, nos registos DNS, haver chaves públicas que permitem ao cliente juntar no client-hello uma versão cifrada do nome do domínio.
+  - ainda não há solução mas o ideal seria existir uma forma de, nos registos DNS, haver chaves públicas que permitem ao cliente juntar no client-hello uma versão cifrada do nome do domínio.
 
 ## TLS/HTTPS nos browsers
 
