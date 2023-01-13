@@ -195,8 +195,8 @@ Em autenticação remota temos várias hipóteses:
 - servidor recebe "templates"/caracteristicas já processadas para match - Processo do lado do cliente
 - servidor recebe apenas resultado de match - Tudo do lado do cliente, o servidor só recebe o resultado do match
 
-Ordem crescente de necessidade de confianqa servidor => cliente
-Ordem decrescente de necessidade de confianqa cliente => servidor
+Ordem crescente de necessidade de confiança servidor => cliente<br>
+Ordem decrescente de necessidade de confiança cliente => servidor
 
 ### Desafios
 
